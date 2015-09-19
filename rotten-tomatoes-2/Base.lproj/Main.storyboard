@@ -54,11 +54,16 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="C7A-Ff-WLL">
+                                <rect key="frame" x="0.0" y="274" width="320" height="20"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="BzW-Yu-CTk"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="C7A-Ff-WLL" id="N1e-MA-LHg"/>
                         <outlet property="tableView" destination="hSE-96-dvX" id="t5y-ae-RcV"/>
                     </connections>
                 </viewController>

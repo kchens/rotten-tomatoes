@@ -11,6 +11,7 @@ import UIKit
 class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
   var movies: [NSDictionary]?
   var refreshControl:UIRefreshControl!
@@ -30,7 +31,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
   }
   
   func refreshLoad() {
-    
+    activityIndicator.hidden = false
     let url = NSURL(string: "https://gist.githubusercontent.com/timothy1ee/d1778ca5b944ed974db0/raw/489d812c7ceeec0ac15ab77bf7c47849f2d1eb2b/gistfile1.json")!
     let request = NSURLRequest(URL: url)
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (
@@ -42,11 +43,12 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
         alert.addAction(action)
         self.presentViewController(alert, animated: true, completion: nil)
         self.refreshControl.endRefreshing()
-        
+        self.activityIndicator.hidden = true
         return
       }
       
       let json = try! NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary
+      self.activityIndicator.hidden = true
       self.refreshControl.endRefreshing()
       if let json = json {
         self.movies = json["movies"] as? [NSDictionary]
