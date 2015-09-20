@@ -7,12 +7,12 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   @IBOutlet weak var errorViewCell: ErrorViewCell!
   @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
   var movies: [NSDictionary]?
   var refreshControl:UIRefreshControl!
@@ -33,7 +33,8 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
   }
   
   func refreshLoad() {
-    activityIndicator.hidden = false
+    MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+//    activityIndicator.hidden = false
     
     let url = NSURL(string: "https://gist.githubusercontent.com/timothy1ee/d1778ca5b944ed974db0/raw/489d812c7ceeec0ac15ab77bf7c47849f2d1eb2b/gistfile1.json")!
     let request = NSURLRequest(URL: url)
@@ -41,7 +42,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) -> Void in
       if let json = data {
         self.errorViewCell.hidden = true
-        self.activityIndicator.hidden = true
+//        self.activityIndicator.hidden = true
         
         let json = try! NSJSONSerialization.JSONObjectWithData(json, options: []) as! NSDictionary
         self.movies = json["movies"] as? [NSDictionary]
@@ -49,11 +50,14 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
         print(json)
         
         self.refreshControl.endRefreshing()
+        MBProgressHUD.hideHUDForView(self.view, animated: true)
       } else {
         if let e = error {
           NSLog("Error: \(e)")
           self.refreshControl.endRefreshing()
-          self.activityIndicator.hidden = true
+          
+          MBProgressHUD.hideHUDForView(self.view, animated: true)
+//          self.activityIndicator.hidden = true
           self.errorViewCell.hidden = false
         }
       }
@@ -94,8 +98,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     cell.titleLabel.text = movie["title"] as? String
     cell.synopsisLabel.text = movie["synopsis"] as? String
     
-    let url = NSURL(string: movie.valueForKeyPath("posters.thumbnail")
- as! String)!
+    let url = NSURL(string: movie.valueForKeyPath("posters.thumbnail") as! String)!
     cell.posterView.setImageWithURL(url)
     
     return cell
@@ -108,16 +111,16 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-      let cell = sender as! UITableViewCell
-      let indexPath = tableView.indexPathForCell(cell)!
-      
-      let movie = movies![indexPath.row]
-      
-      let movieDetailsViewController = segue.destinationViewController as! MovieDetailsViewController
-      movieDetailsViewController.movie = movie
-      
-    }
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    let cell = sender as! UITableViewCell
+    let indexPath = tableView.indexPathForCell(cell)!
+    
+    let movie = movies![indexPath.row]
+    
+    let movieDetailsViewController = segue.destinationViewController as! MovieDetailsViewController
+    movieDetailsViewController.movie = movie
+    
+  }
 
 
 }
