@@ -9,15 +9,19 @@
 import UIKit
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MoviesViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
   @IBOutlet weak var errorViewCell: UIImageView!
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var searchBar: UISearchBar!
 
   let url = NSURL(string: "https://gist.githubusercontent.com/timothy1ee/d1778ca5b944ed974db0/raw/489d812c7ceeec0ac15ab77bf7c47849f2d1eb2b/gistfile1.json")!
   
   var movies: [NSDictionary]?
+  var filteredMovies: [NSDictionary]?
   var refreshControl:UIRefreshControl!
+  var isSearchActive = false
+  var userSearchInput = ""
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -28,6 +32,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     tableView.dataSource = self
     tableView.delegate = self
+    searchBar.delegate = self
   
     refreshLoad()
   }
@@ -53,6 +58,13 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         let json = try! NSJSONSerialization.JSONObjectWithData(json, options: []) as! NSDictionary
         self.movies = json["movies"] as? [NSDictionary]
+
+        if self.userSearchInput.characters.count == 0 {
+          self.filteredMovies = self.movies
+        } else {
+          self.filteredMovies = self.filterMoviesOnSearch(self.userSearchInput)
+        }
+        
         self.tableView.reloadData()
         
         print(json)
@@ -107,9 +119,38 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     })
   }
   
+  // Mark - Search Bar
+  
+  func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    userSearchInput = searchText
+    self.searchBar.text = userSearchInput
+    
+    if userSearchInput == "" {
+      filteredMovies = movies
+      isSearchActive = false
+      searchBar.performSelector("resignFirstResponder", withObject: nil, afterDelay: 0)
+    } else {
+      isSearchActive = true
+      filteredMovies = filterMoviesOnSearch(userSearchInput)
+    }
+    
+    tableView.reloadData()
+  }
+  
+  func filterMoviesOnSearch(searchText: String) -> [NSDictionary] {
+    let filteredMovies = self.movies!.filter({ (movie: NSDictionary) -> Bool in
+      let stringMatch = (movie["title"] as! String).rangeOfString(searchText)
+      return (stringMatch != nil)
+    }) as [NSDictionary]
+    
+    return filteredMovies
+  }
+  
+  // Mark - Table View
+  
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if let movies = movies {
-      return movies.count
+    if let filteredMovies = filteredMovies {
+      return filteredMovies.count
     } else {
       return 0
     }
@@ -119,7 +160,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
     
-    let movie = movies![indexPath.row]
+    let movie = filteredMovies![indexPath.row]
     
     cell.titleLabel.text = movie["title"] as? String
     cell.synopsisLabel.text = movie["synopsis"] as? String
