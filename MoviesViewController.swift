@@ -11,7 +11,8 @@ import MBProgressHUD
 
 class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-  @IBOutlet weak var errorViewCell: ErrorViewCell!
+  @IBOutlet weak var errorViewCell: UIImageView!
+
   @IBOutlet weak var tableView: UITableView!
 
   var movies: [NSDictionary]?
@@ -21,6 +22,8 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     super.viewDidLoad()
 
     self.errorViewCell.hidden = true
+    hideNetworkError()
+    
     tableView.dataSource = self
     tableView.delegate = self
     
@@ -42,6 +45,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) -> Void in
       if let json = data {
         self.errorViewCell.hidden = true
+        self.hideNetworkError()
 //        self.activityIndicator.hidden = true
         
         let json = try! NSJSONSerialization.JSONObjectWithData(json, options: []) as! NSDictionary
@@ -55,10 +59,11 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let e = error {
           NSLog("Error: \(e)")
           self.refreshControl.endRefreshing()
-          
+
           MBProgressHUD.hideHUDForView(self.view, animated: true)
 //          self.activityIndicator.hidden = true
           self.errorViewCell.hidden = false
+          self.showNetworkError()
         }
       }
       
@@ -74,6 +79,28 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //      }
 
     }
+  }
+  
+  func hideNetworkError() {
+    UIView.animateWithDuration(1, animations: { () -> Void in
+      if self.errorViewCell.alpha == 1 {
+        self.tableView.frame.origin.y -= self.errorViewCell.frame.height
+        self.tableView.frame.size.height += self.errorViewCell.frame.height
+      }
+      self.errorViewCell.alpha = 0
+    })
+  }
+  
+  func showNetworkError() {
+    UIView.animateWithDuration(1, animations: { () -> Void in
+      if self.errorViewCell.alpha == 0 {
+        self.tableView.frame.origin.y += self.errorViewCell.frame.height
+        self.tableView.frame.size.height -= self.errorViewCell.frame.height
+      }
+      self.errorViewCell.alpha = 1
+      self.errorViewCell.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+      
+    })
   }
 
   override func didReceiveMemoryWarning() {
@@ -91,7 +118,7 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    var cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
+    let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
     
     let movie = movies![indexPath.row]
     
