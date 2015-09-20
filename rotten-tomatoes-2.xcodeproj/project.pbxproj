@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2940129E1BACF98A006FD94E /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2940129D1BACF98A006FD94E /* MovieDetailsViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		297A3A391BAE7AE000547113 /* ErrorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297A3A381BAE7AE000547113 /* ErrorViewCell.swift */; settings = {ASSET_TAGS = (); }; };
 		297B88701BACE72400321C37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297B886F1BACE72400321C37 /* AppDelegate.swift */; };
 		297B88751BACE72400321C37 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 297B88731BACE72400321C37 /* Main.storyboard */; };
 		297B88771BACE72400321C37 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 297B88761BACE72400321C37 /* Assets.xcassets */; };
@@ -21,7 +20,6 @@
 /* Begin PBXFileReference section */
 		2940129A1BACF6FE006FD94E /* rotten-tomatoes-2-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "rotten-tomatoes-2-Bridging-Header.h"; sourceTree = "<group>"; };
 		2940129D1BACF98A006FD94E /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
-		297A3A381BAE7AE000547113 /* ErrorViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorViewCell.swift; sourceTree = "<group>"; };
 		297B886C1BACE72400321C37 /* rotten-tomatoes-2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rotten-tomatoes-2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		297B886F1BACE72400321C37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		297B88741BACE72400321C37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -93,7 +91,6 @@
 			isa = PBXGroup;
 			children = (
 				297B88851BACF0AD00321C37 /* MovieCell.swift */,
-				297A3A381BAE7AE000547113 /* ErrorViewCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -238,7 +235,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2940129E1BACF98A006FD94E /* MovieDetailsViewController.swift in Sources */,
-				297A3A391BAE7AE000547113 /* ErrorViewCell.swift in Sources */,
 				297B88701BACE72400321C37 /* AppDelegate.swift in Sources */,
 				297B88821BACE79100321C37 /* MoviesViewController.swift in Sources */,
 				297B88861BACF0AD00321C37 /* MovieCell.swift in Sources */,

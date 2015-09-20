@@ -12,57 +12,61 @@ import MBProgressHUD
 class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   @IBOutlet weak var errorViewCell: UIImageView!
-
   @IBOutlet weak var tableView: UITableView!
 
+  let url = NSURL(string: "https://gist.githubusercontent.com/timothy1ee/d1778ca5b944ed974db0/raw/489d812c7ceeec0ac15ab77bf7c47849f2d1eb2b/gistfile1.json")!
+  
   var movies: [NSDictionary]?
   var refreshControl:UIRefreshControl!
   
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.errorViewCell.hidden = true
+//    self.errorViewCell.hidden = true
     hideNetworkError()
+    setUpRefresh()
     
     tableView.dataSource = self
     tableView.delegate = self
-    
+  
+    refreshLoad()
+  }
+  
+  func setUpRefresh() {
     self.refreshControl = UIRefreshControl()
     self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
     self.refreshControl.addTarget(self, action: "refreshLoad", forControlEvents: UIControlEvents.ValueChanged)
     self.tableView.addSubview(refreshControl)
-    
-    refreshLoad()
   }
   
   func refreshLoad() {
     MBProgressHUD.showHUDAddedTo(self.view, animated: true)
 //    activityIndicator.hidden = false
     
-    let url = NSURL(string: "https://gist.githubusercontent.com/timothy1ee/d1778ca5b944ed974db0/raw/489d812c7ceeec0ac15ab77bf7c47849f2d1eb2b/gistfile1.json")!
     let request = NSURLRequest(URL: url)
     
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) -> Void in
       if let json = data {
-        self.errorViewCell.hidden = true
+//        self.errorViewCell.hidden = true
         self.hideNetworkError()
 //        self.activityIndicator.hidden = true
         
         let json = try! NSJSONSerialization.JSONObjectWithData(json, options: []) as! NSDictionary
         self.movies = json["movies"] as? [NSDictionary]
         self.tableView.reloadData()
-        print(json)
         
+        print(json)
+
         self.refreshControl.endRefreshing()
         MBProgressHUD.hideHUDForView(self.view, animated: true)
       } else {
         if let e = error {
-          NSLog("Error: \(e)")
           self.refreshControl.endRefreshing()
+          NSLog("Error: \(e)")
 
           MBProgressHUD.hideHUDForView(self.view, animated: true)
 //          self.activityIndicator.hidden = true
-          self.errorViewCell.hidden = false
+//          self.errorViewCell.hidden = false
           self.showNetworkError()
         }
       }
@@ -102,11 +106,6 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
       
     })
   }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-  }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if let movies = movies {
@@ -135,6 +134,11 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
     tableView.deselectRowAtIndexPath(indexPath, animated: true)
   }
   
+  
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+  }
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation

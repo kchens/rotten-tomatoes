@@ -6,7 +6,7 @@
 //  Copyright © 2015 Kevin Chen. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 
 //class ErrorViewCell: UITableViewCell {
 //
