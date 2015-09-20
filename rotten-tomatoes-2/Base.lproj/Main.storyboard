@@ -16,6 +16,20 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="ezc-kd-bCi" customClass="ErrorViewCell" customModule="rotten_tomatoes_2" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="201" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network Error" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="not-B3-fKI">
+                                            <rect key="frame" x="107" y="11" width="107" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="109" id="wtD-eQ-4S8" customClass="MovieCell" customModule="rotten_tomatoes_2" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="320" height="109"/>
@@ -64,6 +78,7 @@
                     <navigationItem key="navigationItem" id="BzW-Yu-CTk"/>
                     <connections>
                         <outlet property="activityIndicator" destination="C7A-Ff-WLL" id="N1e-MA-LHg"/>
+                        <outlet property="errorViewCell" destination="ezc-kd-bCi" id="oXH-fC-mqw"/>
                         <outlet property="tableView" destination="hSE-96-dvX" id="t5y-ae-RcV"/>
                     </connections>
                 </viewController>

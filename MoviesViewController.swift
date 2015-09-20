@@ -10,6 +10,7 @@ import UIKit
 
 class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+  @IBOutlet weak var errorViewCell: ErrorViewCell!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
@@ -19,42 +20,55 @@ class MoviesViewController: UIViewController, UITableViewDelegate, UITableViewDa
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    self.errorViewCell.hidden = true
+    tableView.dataSource = self
+    tableView.delegate = self
+    
     self.refreshControl = UIRefreshControl()
     self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
     self.refreshControl.addTarget(self, action: "refreshLoad", forControlEvents: UIControlEvents.ValueChanged)
     self.tableView.addSubview(refreshControl)
     
     refreshLoad()
-    
-    tableView.dataSource = self
-    tableView.delegate = self
   }
   
   func refreshLoad() {
     activityIndicator.hidden = false
+    
     let url = NSURL(string: "https://gist.githubusercontent.com/timothy1ee/d1778ca5b944ed974db0/raw/489d812c7ceeec0ac15ab77bf7c47849f2d1eb2b/gistfile1.json")!
     let request = NSURLRequest(URL: url)
-    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (
-      response, data, error) -> Void in
-      
-      if error != nil {
-        let alert = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .Alert)
-        let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
-        alert.addAction(action)
-        self.presentViewController(alert, animated: true, completion: nil)
-        self.refreshControl.endRefreshing()
+    
+    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response, data, error) -> Void in
+      if let json = data {
+        self.errorViewCell.hidden = true
         self.activityIndicator.hidden = true
-        return
-      }
-      
-      let json = try! NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary
-      self.activityIndicator.hidden = true
-      self.refreshControl.endRefreshing()
-      if let json = json {
+        
+        let json = try! NSJSONSerialization.JSONObjectWithData(json, options: []) as! NSDictionary
         self.movies = json["movies"] as? [NSDictionary]
         self.tableView.reloadData()
         print(json)
+        
+        self.refreshControl.endRefreshing()
+      } else {
+        if let e = error {
+          NSLog("Error: \(e)")
+          self.refreshControl.endRefreshing()
+          self.activityIndicator.hidden = true
+          self.errorViewCell.hidden = false
+        }
       }
+      
+//      if error != nil {
+//        let alert = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .Alert)
+//        let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
+//        alert.addAction(action)
+//        self.presentViewController(alert, animated: true, completion: nil)
+//        self.refreshControl.endRefreshing()
+//        self.activityIndicator.hidden = true
+//        self.errorViewCell.hidden = false
+//        return
+//      }
+
     }
   }
 
