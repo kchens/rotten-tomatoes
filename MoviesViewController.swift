@@ -20,7 +20,6 @@ class MoviesViewController: UIViewController, UISearchBarDelegate, UITableViewDe
   var movies: [NSDictionary]?
   var filteredMovies: [NSDictionary]?
   var refreshControl:UIRefreshControl!
-  var isSearchActive = false
   var userSearchInput = ""
   
   override func viewDidLoad() {
@@ -122,29 +121,32 @@ class MoviesViewController: UIViewController, UISearchBarDelegate, UITableViewDe
   // Mark - Search Bar
   
   func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-    userSearchInput = searchText
-    self.searchBar.text = userSearchInput
-    
-    if userSearchInput == "" {
-      filteredMovies = movies
-      isSearchActive = false
-      searchBar.performSelector("resignFirstResponder", withObject: nil, afterDelay: 0)
-    } else {
-      isSearchActive = true
-      filteredMovies = filterMoviesOnSearch(userSearchInput)
-    }
-    
+//    filteredMovies = searchText.isEmpty ? movies : movies!.filter({ (movie: NSDictionary) -> Bool in
+//    let stringMatch = (movie["title"] as! String).rangeOfString(searchText, options: .CaseInsensitiveSearch)
+//      return (stringMatch != nil)
+//    })
+    filterMoviesOnSearch(searchText)
     tableView.reloadData()
   }
   
   func filterMoviesOnSearch(searchText: String) -> [NSDictionary] {
-    let filteredMovies = self.movies!.filter({ (movie: NSDictionary) -> Bool in
-      let stringMatch = (movie["title"] as! String).rangeOfString(searchText)
+    filteredMovies = searchText.isEmpty ? movies : movies!.filter({ (movie: NSDictionary) -> Bool in
+      let stringMatch = (movie["title"] as! String).rangeOfString(searchText, options: .CaseInsensitiveSearch)
       return (stringMatch != nil)
-    }) as [NSDictionary]
+    })
     
-    return filteredMovies
+    return filteredMovies!
   }
+
+  
+//  func filterMoviesOnSearch(searchText: String) -> [NSDictionary] {
+//    let filteredMovies = self.movies!.filter({ (movie: NSDictionary) -> Bool in
+//      let stringMatch = (movie["title"] as! String).rangeOfString(searchText)
+//      return (stringMatch != nil)
+//    }) as [NSDictionary]
+//    
+//    return filteredMovies
+//  }
   
   // Mark - Table View
   
@@ -192,7 +194,7 @@ class MoviesViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     let cell = sender as! UITableViewCell
     let indexPath = tableView.indexPathForCell(cell)!
     
-    let movie = movies![indexPath.row]
+    let movie = filteredMovies![indexPath.row]
     
     let movieDetailsViewController = segue.destinationViewController as! MovieDetailsViewController
     movieDetailsViewController.movie = movie
