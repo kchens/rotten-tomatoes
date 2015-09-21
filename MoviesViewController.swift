@@ -165,8 +165,13 @@ class MoviesViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     cell.titleLabel.text = movie["title"] as? String
     cell.synopsisLabel.text = movie["synopsis"] as? String
     
+    // Request and fade-in all movies
     let url = NSURL(string: movie.valueForKeyPath("posters.thumbnail") as! String)!
+    cell.posterView.alpha = 0
     cell.posterView.setImageWithURL(url)
+    UIView.animateWithDuration(2.0, animations: {
+      cell.posterView.alpha = 1
+    })
     
     return cell
   }
