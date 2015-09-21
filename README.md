@@ -1,5 +1,7 @@
 Rotten Tomatoes
 
+NOTES:  Had to completely rebuild the app due to some iOS 9 and Swift 2.0 issue. Moreover, spent a lot of time dealing with stacking Interface Builder elements.
+
 This is a movies app displaying box office and top rental DVDs using the [Rotten Tomatoes API](http://developer.rottentomatoes.com/docs/read/JSON).
 
 Time spent: `14`
